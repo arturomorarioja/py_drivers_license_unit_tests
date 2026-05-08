@@ -184,9 +184,12 @@ class TestDriversLicense():
     # Theory exam points
     @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
         
-        # Equivalence partition-based test cases
+        # Equivalence partition-based test case
 
         (-50, 1),                   # middle value for the invalid partition MIN INTEGER- -1
+
+        # Boundary values-based test cases
+
         (-2, 1),                    
         (-1, 1),                    # upper boundary value for the invalid partition MIN INTEGER- -1
 
@@ -204,9 +207,12 @@ class TestDriversLicense():
     # Practical exam errors
     @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
         
-        # Equivalence partition-based test cases
+        # Equivalence partition-based test case
 
         (90, -5),                   # middle value for the invalid partition MIN INTEGER- -1
+
+        # Boundary value-based test case
+
         (90, -1),                   # upper boundary value for the invalid partition MIN INTEGER- -1
 
         # Edge cases 
