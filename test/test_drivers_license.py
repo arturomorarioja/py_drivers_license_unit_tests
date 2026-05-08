@@ -57,6 +57,12 @@ class TestDriversLicense():
             'repeat_practical_exam': False,
             'additional_lessons': False
         }),
+        (2, 1, {                               
+            'license_granted': False,
+            'repeat_theory_exam': True,
+            'repeat_practical_exam': False,
+            'additional_lessons': False
+        }),
         (83, 1, {                               
             'license_granted': False,
             'repeat_theory_exam': True,
@@ -126,6 +132,12 @@ class TestDriversLicense():
             'repeat_practical_exam': True,
             'additional_lessons': False
         }),
+        (90, 5, {                              
+            'license_granted': False,
+            'repeat_theory_exam': False,
+            'repeat_practical_exam': True,
+            'additional_lessons': False
+        }),
         (90, sys.maxsize, {                     # Edge case: maximum integer in Python                  
             'license_granted': False,
             'repeat_theory_exam': False,
@@ -147,15 +159,16 @@ class TestDriversLicense():
     # Negative testing
     #    
 
+    # Theory exam points
     @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
         
-        # Equivalence partition-based test case
+        # Equivalence partition-based test cases
 
-        (120, 1),                   # Theory exam points: middle value for the invalid partition
+        (120, 1),                   # middle value for the invalid partition 101-MAX INTEGER
 
         # Boundary value-based test case
 
-        (101, 1),                   # Theory exam points: lower boundary value for the invalid partition
+        (101, 1),                   # lower boundary value for the invalid partition 101-MAX INTEGER
 
         # Edge cases 
 
@@ -168,18 +181,47 @@ class TestDriversLicense():
             drivers_license_exam_evaluation(theory_exam_points, practical_exam_errors)
         assert str(error_info.value) == 'There can not be more than 100 points for a theory exam.'
 
-    # Other edge cases
-    
-    def test_drivers_license_negative_theory_exam_points_fails(self):
+    # Theory exam points
+    @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
+        
+        # Equivalence partition-based test cases
+
+        (-50, 1),                   # middle value for the invalid partition MIN INTEGER- -1
+        (-2, 1),                    
+        (-1, 1),                    # upper boundary value for the invalid partition MIN INTEGER- -1
+
+        # Edge cases 
+
+        (-sys.maxsize, 1),           # Minimum integer in Python
+        (-sys.maxsize - 1, 1),       # Minimum integer in Python - 1 (it is converted to long)
+
+    ])
+    def test_drivers_license_fails(self, theory_exam_points, practical_exam_errors):
         with pytest.raises(ValueError) as error_info:
-            drivers_license_exam_evaluation(-1, 1)
+            drivers_license_exam_evaluation(theory_exam_points, practical_exam_errors)
         assert str(error_info.value) == 'The number of exam points cannot be negative.'
-    
-    def test_drivers_license_negative_practical_exam_errors_fails(self):
+
+    # Practical exam errors
+    @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
+        
+        # Equivalence partition-based test cases
+
+        (90, -5),                   # middle value for the invalid partition MIN INTEGER- -1
+        (90, -1),                   # upper boundary value for the invalid partition MIN INTEGER- -1
+
+        # Edge cases 
+
+        (90, -sys.maxsize),         # Minimum integer in Python
+        (90, -sys.maxsize - 1),     # Minimum integer in Python - 1 (it is converted to long)
+
+    ])
+    def test_drivers_license_fails(self, theory_exam_points, practical_exam_errors):
         with pytest.raises(ValueError) as error_info:
-            drivers_license_exam_evaluation(90, -1)
+            drivers_license_exam_evaluation(theory_exam_points, practical_exam_errors)
         assert str(error_info.value) == 'The number of practical exam errors cannot be negative.'
 
+    # Other edge cases
+    
     @pytest.mark.parametrize('theory_exam_points, practical_exam_errors', [
         ('Hello', 1),
         (90, 'Hello')
